@@ -1,0 +1,65 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Visual Studio Code
+.vscode/
+
+# Spring Boot
+*.jar
+*.war
+*.ear
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Database
+*.h2.db
+*.mv.db
+*.trace.db
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.class
+*.swp
+*.swo
+
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# Firebase
+firebase-service-account.json
+
+# Build Folders
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Help and documentation
+HELP.md
