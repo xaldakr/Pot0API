@@ -3,6 +3,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import catolica.edu.pot0tickets.models.Usuario;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -233,7 +235,8 @@ public class CorreoService {
 
         enviar(destinatario, asunto, cuerpo);
     }
-    public void enviarBienvenidaUsuarioCorreo(String destinatario, String clase, String nombre, String apellido, String telefono, String contacto, String correo, String contrasena) {
+    public void enviarBienvenida(Usuario usuario) {
+        String destinatario = usuario.getEmail();
         String asunto = "Bienvenido al servicio de Pot1 Tickets";
         String cuerpo = String.format(
                 "<html><head><style>" +
@@ -256,19 +259,23 @@ public class CorreoService {
                 "<p>Contraseña: <span class='login'>%s</span></p>" +
                 "<p>Si quiere hacer un cambio de datos más adelante, contacte a este correo por favor.</p>" +
                 "</div></body></html>",
-                clase, nombre, apellido, telefono, contacto, correo, contrasena
+                usuario.getRol().getNombre(), usuario.getNombre(), usuario.getApellido(),
+                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), usuario.getContrasena()
         );
 
         enviar(destinatario, asunto, cuerpo);
     }
 
-    public void enviarCambioDatosIngresoCorreo(String destinatario, String clase, String nombre, String apellido, String telefono, String contacto, String correo, String contrasena) {
+    public void enviarCambioDatos(Usuario usuario) {
+        String destinatario = usuario.getEmail();
         String asunto = "Cambio de datos al ingreso de Pot1 Tickets";
         String cuerpo = String.format(
                 "<html><head><style>" +
                 ".header {background-color: #2E3B4E; color: white; text-align: center; padding: 10px 0; font-size: 24px; font-weight: bold;}" +
                 ".content {background-color: #D3DCE5; padding: 20px; font-family: Arial, sans-serif; font-size: 18px; text-align: center; color: black;}" +
                 ".field {color: #8D774A;}" +
+                ".contact {color: #3A5894; text-decoration: underline;}" +
+                ".login {color: #3A5894; font-style: italic;}" +
                 "</style></head>" +
                 "<body><div class='header'>Cambio de datos al ingreso de Pot1 Tickets</div>" +
                 "<div class='content'>" +
@@ -284,7 +291,8 @@ public class CorreoService {
                 "<p>Contraseña: <span class='login'>%s</span></p>" +
                 "<p>Si quiere hacer un cambio de datos más adelante, contacte a este correo por favor.</p>" +
                 "</div></body></html>",
-                clase, nombre, apellido, telefono, contacto, correo, contrasena
+                usuario.getRol().getNombre(), usuario.getNombre(), usuario.getApellido(),
+                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), usuario.getContrasena()
         );
 
         enviar(destinatario, asunto, cuerpo);

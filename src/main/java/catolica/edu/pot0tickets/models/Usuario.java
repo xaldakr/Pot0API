@@ -37,6 +37,11 @@ public class Usuario {
     @Size(max = 20)
     private String telContacto;
 
+    // Relación ManyToOne con Rol
+    @ManyToOne
+    @JoinColumn(name = "id_rol", referencedColumnName = "idRol", insertable = false, updatable = false)
+    private Rol rol;
+
     @NotNull
     @Column(name = "id_rol")
     private int idRol;
@@ -121,4 +126,15 @@ public class Usuario {
         this.idRol = idRol;
     }
 
+    // Nuevo getter para acceder al rol completo del usuario
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+        if (rol != null) {
+            this.idRol = rol.getIdRol();
+        }
+    }
 }
