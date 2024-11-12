@@ -47,6 +47,37 @@ public class Notificacion {
         this.idTicket = idTicket;
     }
 
+    // Constructor sin id
+    public Notificacion( String dato, String urlArchivo, boolean notificarCliente, boolean autogenerada, Integer remitente, int idTicket) {
+        this.dato = dato;
+        this.urlArchivo = urlArchivo;
+        this.notificarCliente = notificarCliente;
+        this.fecha = new Date();
+        this.autogenerada = autogenerada;
+        this.remitente = remitente;
+        this.idTicket = idTicket;
+    }
+
+    // Constructor sin id ni archivo
+    public Notificacion( String dato,  boolean notificarCliente, boolean autogenerada, Integer remitente, int idTicket) {
+        this.dato = dato;
+        this.notificarCliente = notificarCliente;
+        this.fecha = new Date();
+        this.autogenerada = autogenerada;
+        this.remitente = remitente;
+        this.idTicket = idTicket;
+    }
+
+    // Constructor automático
+    public Notificacion( String dato, Integer remitente, int idTicket) {
+        this.dato = dato;
+        this.notificarCliente = false;
+        this.fecha = new Date();
+        this.autogenerada = true;
+        this.remitente = remitente;
+        this.idTicket = idTicket;
+    }
+
     // Getters y Setters
     public int getIdNotificacion() {
         return idNotificacion;

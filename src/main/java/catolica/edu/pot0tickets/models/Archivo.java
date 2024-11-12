@@ -15,17 +15,18 @@ public class Archivo {
     @Size(max = 400)
     private String url;
 
-    @NotNull
-    private int idTicket;
+    @ManyToOne
+    @JoinColumn(name = "id_ticket", referencedColumnName = "idTicket")
+    private Ticket ticket;
 
     // Constructor vacío
     public Archivo() {}
 
     // Constructor con todos los atributos
-    public Archivo(int idArchivo, String url, int idTicket) {
+    public Archivo(int idArchivo, String url, Ticket ticket) {
         this.idArchivo = idArchivo;
         this.url = url;
-        this.idTicket = idTicket;
+        this.ticket = ticket;
     }
 
     // Getters y Setters
@@ -45,11 +46,11 @@ public class Archivo {
         this.url = url;
     }
 
-    public int getIdTicket() {
-        return idTicket;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public void setIdTicket(int idTicket) {
-        this.idTicket = idTicket;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 }

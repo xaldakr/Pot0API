@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Tickets")
@@ -27,7 +28,6 @@ public class Ticket {
     private String prioridad;
 
     @NotNull
-    @Size(max = 250)
     private String servicio;
 
     private boolean resuelta;
@@ -35,16 +35,25 @@ public class Ticket {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
-    private Integer idEncargado;
+    @ManyToOne
+    @JoinColumn(name = "id_cliente", referencedColumnName = "idUsuario")
+    private Usuario cliente;
 
-    @NotNull
-    private int idCliente;
+    @ManyToOne
+    @JoinColumn(name = "id_encargado", referencedColumnName = "idUsuario")
+    private Usuario encargado;
+
+    @OneToMany(mappedBy = "ticket")
+    private List<Archivo> archivos;
+
+    @OneToMany(mappedBy = "ticket")
+    private List<Notificacion> notificaciones;
 
     // Constructor vacío
     public Ticket() {}
 
     // Constructor con todos los atributos
-    public Ticket(int idTicket, String estado, String descripcion, String prioridad, String servicio, boolean resuelta, Date fecha, Integer idEncargado, int idCliente) {
+    public Ticket(int idTicket, String estado, String descripcion, String prioridad, String servicio, boolean resuelta, Date fecha, Usuario cliente, Usuario encargado) {
         this.idTicket = idTicket;
         this.estado = estado;
         this.descripcion = descripcion;
@@ -52,8 +61,8 @@ public class Ticket {
         this.servicio = servicio;
         this.resuelta = resuelta;
         this.fecha = fecha;
-        this.idEncargado = idEncargado;
-        this.idCliente = idCliente;
+        this.cliente = cliente;
+        this.encargado = encargado;
     }
 
     // Getters y Setters
@@ -113,19 +122,19 @@ public class Ticket {
         this.fecha = fecha;
     }
 
-    public Integer getIdEncargado() {
-        return idEncargado;
+    public Usuario getCliente() {
+        return cliente;
     }
 
-    public void setIdEncargado(Integer idEncargado) {
-        this.idEncargado = idEncargado;
+    public void setCliente(Usuario cliente) {
+        this.cliente = cliente;
     }
 
-    public int getIdCliente() {
-        return idCliente;
+    public Usuario getEncargado() {
+        return encargado;
     }
 
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
+    public void setEncargado(Usuario encargado) {
+        this.encargado = encargado;
     }
 }

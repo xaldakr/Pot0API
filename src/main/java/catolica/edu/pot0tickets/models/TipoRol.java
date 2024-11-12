@@ -3,6 +3,7 @@ package catolica.edu.pot0tickets.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "Tipos_Rol")
@@ -14,6 +15,9 @@ public class TipoRol {
     @NotNull
     @Size(max = 20)
     private String nombre;
+
+    @OneToMany(mappedBy = "tipoRol")
+    private List<Rol> roles;
 
     // Constructor vacío
     public TipoRol() {}
@@ -39,5 +43,13 @@ public class TipoRol {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public List<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Rol> roles) {
+        this.roles = roles;
     }
 }

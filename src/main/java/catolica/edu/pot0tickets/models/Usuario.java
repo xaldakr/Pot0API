@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuarios")
@@ -42,15 +43,20 @@ public class Usuario {
     @JoinColumn(name = "id_rol", referencedColumnName = "idRol", insertable = false, updatable = false)
     private Rol rol;
 
-    @NotNull
-    @Column(name = "id_rol")
-    private int idRol;
+    @OneToMany(mappedBy = "cliente")
+    private List<Ticket> ticketsCliente;
+
+    @OneToMany(mappedBy = "encargado")
+    private List<Ticket> ticketsEncargado;
+
+    @OneToMany(mappedBy = "encargado")
+    private List<Tarea> tareas;
 
     // Constructor vacío
     public Usuario() {}
 
     // Constructor con todos los atributos
-    public Usuario(int idUsuario, String nombre, String apellido, String telefono, String email, String contrasena, String telContacto, int idRol) {
+    public Usuario(int idUsuario, String nombre, String apellido, String telefono, String email, String contrasena, String telContacto, Rol rol) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -58,7 +64,7 @@ public class Usuario {
         this.email = email;
         this.contrasena = contrasena;
         this.telContacto = telContacto;
-        this.idRol = idRol;
+        this.rol = rol;
     }
 
     // Getters y Setters
@@ -118,23 +124,11 @@ public class Usuario {
         this.telContacto = telContacto;
     }
 
-    public int getIdRol() {
-        return idRol;
-    }
-
-    public void setIdRol(int idRol) {
-        this.idRol = idRol;
-    }
-
-    // Nuevo getter para acceder al rol completo del usuario
     public Rol getRol() {
         return rol;
     }
 
     public void setRol(Rol rol) {
         this.rol = rol;
-        if (rol != null) {
-            this.idRol = rol.getIdRol();
-        }
     }
 }

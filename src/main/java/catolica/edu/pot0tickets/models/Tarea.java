@@ -49,6 +49,16 @@ public class Tarea {
         this.idTicket = idTicket;
         this.idEncargado = idEncargado;
     }
+    // Constructor sin id
+    public Tarea(String nombre, String info, String prioridad, String estado, boolean completada, int idTicket, Integer idEncargado) {
+        this.nombre = nombre;
+        this.info = info;
+        this.prioridad = prioridad;
+        this.estado = estado;
+        this.completada = completada;
+        this.idTicket = idTicket;
+        this.idEncargado = idEncargado;
+    }
 
     // Getters y Setters
     public int getIdTarea() {
