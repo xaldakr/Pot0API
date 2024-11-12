@@ -2,7 +2,6 @@ package catolica.edu.pot0tickets.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -22,7 +21,6 @@ public class Tarea {
 
     @NotNull
     @Size(max = 20)
-    @Pattern(regexp = "^(BAJA|NORMAL|IMPORTANTE|CRÍTICA)$")
     private String prioridad;
 
     @NotNull
@@ -30,34 +28,37 @@ public class Tarea {
 
     private boolean completada;
 
-    @NotNull
-    private int idTicket;
+    @ManyToOne
+    @JoinColumn(name = "id_ticket", referencedColumnName = "idTicket")
+    private Ticket ticket;
 
-    private Integer idEncargado;
+    @ManyToOne
+    @JoinColumn(name = "id_encargado", referencedColumnName = "idUsuario")
+    private Usuario encargado;
 
     // Constructor vacío
     public Tarea() {}
 
     // Constructor con todos los atributos
-    public Tarea(int idTarea, String nombre, String info, String prioridad, String estado, boolean completada, int idTicket, Integer idEncargado) {
+    public Tarea(int idTarea, String nombre, String info, String prioridad, String estado, boolean completada, Ticket ticket, Usuario encargado) {
         this.idTarea = idTarea;
         this.nombre = nombre;
         this.info = info;
         this.prioridad = prioridad;
         this.estado = estado;
         this.completada = completada;
-        this.idTicket = idTicket;
-        this.idEncargado = idEncargado;
+        this.ticket = ticket;
+        this.encargado = encargado;
     }
-    // Constructor sin id
-    public Tarea(String nombre, String info, String prioridad, String estado, boolean completada, int idTicket, Integer idEncargado) {
+    public Tarea( String nombre, String info, String prioridad, String estado, boolean completada, Ticket ticket, Usuario encargado) {
+
         this.nombre = nombre;
         this.info = info;
         this.prioridad = prioridad;
         this.estado = estado;
         this.completada = completada;
-        this.idTicket = idTicket;
-        this.idEncargado = idEncargado;
+        this.ticket = ticket;
+        this.encargado = encargado;
     }
 
     // Getters y Setters
@@ -109,19 +110,19 @@ public class Tarea {
         this.completada = completada;
     }
 
-    public int getIdTicket() {
-        return idTicket;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public void setIdTicket(int idTicket) {
-        this.idTicket = idTicket;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 
-    public Integer getIdEncargado() {
-        return idEncargado;
+    public Usuario getEncargado() {
+        return encargado;
     }
 
-    public void setIdEncargado(Integer idEncargado) {
-        this.idEncargado = idEncargado;
+    public void setEncargado(Usuario encargado) {
+        this.encargado = encargado;
     }
 }

@@ -35,4 +35,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
            "WHERE r.tipoRol = 2 AND u.email LIKE %:busqueda% " +
            "ORDER BY u.nombre DESC")
     List<Object> findTechnicians(@Param("busqueda") String busqueda);
+
+    // Método personalizado para encontrar el cliente asociado a un ticket específico
+    @Query("SELECT u FROM Usuario u JOIN Ticket t ON u.idUsuario = t.cliente.idUsuario WHERE t.idTicket = :idTicket")
+    Usuario findClienteByTicketId(@Param("idTicket") int idTicket);
 }

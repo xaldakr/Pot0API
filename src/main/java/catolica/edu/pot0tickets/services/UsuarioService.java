@@ -57,7 +57,7 @@ public class UsuarioService {
             usuario.setEmail(updatedUsuario.getEmail());
             usuario.setContrasena(passwordEncoder.encode(updatedUsuario.getContrasena()));
             usuario.setTelContacto(updatedUsuario.getTelContacto());
-            usuario.setIdRol(updatedUsuario.getIdRol());
+            usuario.setRol(updatedUsuario.getRol());
             Usuario usuarioActualizado = usuarioRepository.save(usuario);
             correoService.enviarCambioDatos(usuarioActualizado);
             return usuarioActualizado;

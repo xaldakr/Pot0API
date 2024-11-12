@@ -27,16 +27,19 @@ public class Notificacion {
 
     private boolean autogenerada;
 
-    private Integer remitente;
+    @ManyToOne
+    @JoinColumn(name = "remitente", referencedColumnName = "idUsuario")
+    private Usuario remitente;
 
-    @NotNull
-    private int idTicket;
+    @ManyToOne
+    @JoinColumn(name = "id_ticket", referencedColumnName = "idTicket")
+    private Ticket ticket;
 
     // Constructor vacío
     public Notificacion() {}
 
     // Constructor con todos los atributos
-    public Notificacion(int idNotificacion, String dato, String urlArchivo, boolean notificarCliente, Date fecha, boolean autogenerada, Integer remitente, int idTicket) {
+    public Notificacion(int idNotificacion, String dato, String urlArchivo, boolean notificarCliente, Date fecha, boolean autogenerada, Usuario remitente, Ticket ticket) {
         this.idNotificacion = idNotificacion;
         this.dato = dato;
         this.urlArchivo = urlArchivo;
@@ -44,38 +47,38 @@ public class Notificacion {
         this.fecha = fecha;
         this.autogenerada = autogenerada;
         this.remitente = remitente;
-        this.idTicket = idTicket;
+        this.ticket = ticket;
     }
 
     // Constructor sin id
-    public Notificacion( String dato, String urlArchivo, boolean notificarCliente, boolean autogenerada, Integer remitente, int idTicket) {
+    public Notificacion( String dato, String urlArchivo, boolean notificarCliente, boolean autogenerada, Usuario remitente, Ticket ticket) {
         this.dato = dato;
         this.urlArchivo = urlArchivo;
         this.notificarCliente = notificarCliente;
         this.fecha = new Date();
         this.autogenerada = autogenerada;
         this.remitente = remitente;
-        this.idTicket = idTicket;
+        this.ticket = ticket;
     }
 
     // Constructor sin id ni archivo
-    public Notificacion( String dato,  boolean notificarCliente, boolean autogenerada, Integer remitente, int idTicket) {
+    public Notificacion( String dato,  boolean notificarCliente, boolean autogenerada, Usuario remitente, Ticket ticket) {
         this.dato = dato;
         this.notificarCliente = notificarCliente;
         this.fecha = new Date();
         this.autogenerada = autogenerada;
         this.remitente = remitente;
-        this.idTicket = idTicket;
+        this.ticket = ticket;
     }
 
     // Constructor automático
-    public Notificacion( String dato, Integer remitente, int idTicket) {
+    public Notificacion( String dato, Usuario remitente, Ticket ticket) {
         this.dato = dato;
         this.notificarCliente = false;
         this.fecha = new Date();
         this.autogenerada = true;
         this.remitente = remitente;
-        this.idTicket = idTicket;
+        this.ticket = ticket;
     }
 
     // Getters y Setters
@@ -127,19 +130,19 @@ public class Notificacion {
         this.autogenerada = autogenerada;
     }
 
-    public Integer getRemitente() {
+    public Usuario getRemitente() {
         return remitente;
     }
 
-    public void setRemitente(Integer remitente) {
+    public void setRemitente(Usuario remitente) {
         this.remitente = remitente;
     }
 
-    public int getIdTicket() {
-        return idTicket;
+    public Ticket getTicket() {
+        return ticket;
     }
 
-    public void setIdTicket(int idTicket) {
-        this.idTicket = idTicket;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 }

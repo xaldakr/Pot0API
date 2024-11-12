@@ -131,4 +131,8 @@ public class Usuario {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
+
+    public String getNombreCompleto() {
+        return nombre + " " + apellido;
+    }
 }

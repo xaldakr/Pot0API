@@ -28,6 +28,7 @@ public class Ticket {
     private String prioridad;
 
     @NotNull
+    @Size(max = 250)
     private String servicio;
 
     private boolean resuelta;
@@ -55,6 +56,17 @@ public class Ticket {
     // Constructor con todos los atributos
     public Ticket(int idTicket, String estado, String descripcion, String prioridad, String servicio, boolean resuelta, Date fecha, Usuario cliente, Usuario encargado) {
         this.idTicket = idTicket;
+        this.estado = estado;
+        this.descripcion = descripcion;
+        this.prioridad = prioridad;
+        this.servicio = servicio;
+        this.resuelta = resuelta;
+        this.fecha = fecha;
+        this.cliente = cliente;
+        this.encargado = encargado;
+    }
+    public Ticket( String estado, String descripcion, String prioridad, String servicio, boolean resuelta, Date fecha, Usuario cliente, Usuario encargado) {
+
         this.estado = estado;
         this.descripcion = descripcion;
         this.prioridad = prioridad;

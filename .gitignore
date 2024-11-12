@@ -63,3 +63,4 @@ build/
 
 # Help and documentation
 HELP.md
+src/main/resources/firebase-config.json
