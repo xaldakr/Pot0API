@@ -50,6 +50,9 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket")
     private List<Notificacion> notificaciones;
 
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Tarea> tareas;
+
     // Constructor vacío
     public Ticket() {}
 
@@ -148,5 +151,17 @@ public class Ticket {
 
     public void setEncargado(Usuario encargado) {
         this.encargado = encargado;
+    }
+
+    public List<Tarea> getTareas() {
+        return tareas;
+    }
+
+    public void setTareas(List<Tarea> tareas) {
+        this.tareas = tareas;
+    }
+
+    public boolean hasIncompleteTasks() {
+        return tareas.stream().anyMatch(tarea -> !tarea.isCompletada());
     }
 }

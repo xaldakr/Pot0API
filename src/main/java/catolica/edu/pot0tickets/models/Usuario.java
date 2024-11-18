@@ -135,4 +135,9 @@ public class Usuario {
     public String getNombreCompleto() {
         return nombre + " " + apellido;
     }
+
+    @Override
+    public String toString() {
+        return this.nombre + " " + this.apellido;
+    }
 }
