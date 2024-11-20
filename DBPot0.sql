@@ -94,3 +94,4 @@ CREATE TABLE Tareas(
     FOREIGN KEY (id_encargado) REFERENCES Usuarios(id_usuario),
     FOREIGN KEY (id_ticket) REFERENCES Tickets(id_ticket)
 );
+DROP TRIGGER trigger_encrypt_password ON usuarios;

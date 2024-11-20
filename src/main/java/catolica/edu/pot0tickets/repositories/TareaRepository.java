@@ -12,7 +12,7 @@ import java.util.List;
 public interface TareaRepository extends JpaRepository<Tarea, Integer> {
 
     // Encontrar todas las tareas asignadas a un encargado específico que contienen un nombre determinado
-    @Query("SELECT t FROM Tarea t WHERE t.idEncargado = :idEncargado AND t.nombre LIKE %:nombre%")
+    @Query("SELECT t FROM Tarea t WHERE t.encargado.idUsuario = :idEncargado AND t.nombre LIKE %:nombre%")
     List<Tarea> findAllByEncargadoAndNombreContains(@Param("idEncargado") int idEncargado, @Param("nombre") String nombre);
 
     // Obtener tareas según su estado de finalización

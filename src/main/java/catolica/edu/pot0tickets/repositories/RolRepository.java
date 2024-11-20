@@ -12,8 +12,8 @@ import java.util.List;
 public interface RolRepository extends JpaRepository<Rol, Integer> {
 
     // Encontrar roles por tipo específico (evitando el tipo "Cliente")
-    @Query("SELECT r FROM Rol r WHERE r.tipoRol != :tipoCliente AND r.idRol = :idrolencargado")
-    List<Rol> findByTipoRolAndIdRolNot(@Param("tipoCliente") int tipoCliente, @Param("tipoEncargado") int idrolencargado);
+    @Query("SELECT r FROM Rol r WHERE r.tipoRol.idTipoRol != :tipoCliente AND r.idRol = :idrolencargado")
+    List<Rol> findByTipoRolAndIdRolNot(@Param("tipoCliente") int tipoCliente, @Param("idrolencargado") int idrolencargado);
     
 }
 

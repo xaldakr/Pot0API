@@ -22,7 +22,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     int countByEstadoNotIn(@Param("estados") List<String> estados);
 
     // Encontrar cliente asociado a un ticket
-    @Query("SELECT u FROM Usuario u JOIN Ticket t ON u.idUsuario = t.idCliente WHERE t.idTicket = :idTicket")
+    @Query("SELECT u FROM Usuario u JOIN Ticket t ON u.idUsuario = t.cliente.idUsuario WHERE t.idTicket = :idTicket")
     Usuario findClienteByTicketId(@Param("idTicket") int idTicket);
 
     @Query("SELECT new map(t.idTicket as Id, t.servicio as Servicio, t.fecha as FechaDate, t.estado as Estado, CONCAT(c.nombre, ' ', c.apellido) as Cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as Empleado, c.email as Correo) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario ORDER BY t.fecha DESC")
@@ -54,8 +54,42 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT new map(t.idTicket as idTicket, t.estado as estado, t.descripcion as descripcion, t.prioridad as prioridad, t.servicio as servicio, t.fecha as fecha, CONCAT(c.nombre, ' ', c.apellido) as Cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as encargado) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario WHERE t.idTicket = :idTicket")
     Map<String, Object> findTicketDetailById(int idTicket);
 
-    @Query("SELECT new map(t.estado as estado, t.descripcion as descripcion, t.prioridad as prioridad, t.servicio as servicio, t.fecha as fecha, CONCAT(c.nombre, ' ', c.apellido) as cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as encargado, a.url as archivos, tr.nombre as tareas, n.dato as notificaciones) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario LEFT JOIN Archivo a ON a.idTicket = t.idTicket LEFT JOIN Tarea tr ON tr.idTicket = t.idTicket LEFT JOIN Notificacion n ON n.idTicket = t.idTicket WHERE t.idTicket = :idTicket")
+    @Query("""
+        SELECT t.estado AS estado, 
+            t.descripcion AS descripcion, 
+            t.prioridad AS prioridad, 
+            t.servicio AS servicio, 
+            t.fecha AS fecha, 
+            CONCAT(c.nombre, ' ', c.apellido) AS cliente, 
+            CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END AS encargado,
+            (SELECT STRING_AGG(a.url, ', ') FROM Archivo a WHERE a.ticket.idTicket = t.idTicket) AS archivos,
+            (SELECT STRING_AGG(CONCAT(tr.nombre, ' - ', tr.prioridad), ', ') FROM Tarea tr WHERE tr.ticket.idTicket = t.idTicket) AS tareas,
+            (SELECT STRING_AGG(CONCAT(n.dato, ' - ', n.urlArchivo), ', ') 
+                FROM Notificacion n 
+                WHERE n.ticket.idTicket = t.idTicket AND n.notificarCliente = true) AS notificaciones
+        FROM Ticket t
+        JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario
+        LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario
+        WHERE t.idTicket = :idTicket
+    """)
+    Map<String, Object> findTicketDetail(@Param("idTicket") int idTicket);
+
+    @Query("""
+        SELECT new map(t.estado as estado, t.descripcion as descripcion, 
+        t.prioridad as prioridad, t.servicio as servicio, t.fecha as fecha, 
+        CONCAT(c.nombre, ' ', c.apellido) as cliente, 
+        CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as encargado, 
+        a.url as archivos, tr.nombre as tareas, n.dato as notificaciones) 
+        FROM Ticket t 
+        JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario 
+        LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario 
+        LEFT JOIN Archivo a ON a.ticket.idTicket = t.idTicket 
+        LEFT JOIN Tarea tr ON tr.ticket.idTicket = t.idTicket 
+        LEFT JOIN Notificacion n ON n.ticket.idTicket = t.idTicket 
+        WHERE t.idTicket = :idTicket
+        """)
     Map<String, Object> findTicketDetailForClient(int idTicket);
+
 
                                                  
 }
