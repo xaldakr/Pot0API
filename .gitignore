@@ -64,3 +64,5 @@ build/
 # Help and documentation
 HELP.md
 src/main/resources/firebase-config.json
+docker-compose.yml
+src/main/resources/application.properties

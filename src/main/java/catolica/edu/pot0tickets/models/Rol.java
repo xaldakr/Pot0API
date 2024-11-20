@@ -1,5 +1,6 @@
 package catolica.edu.pot0tickets.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,6 +23,7 @@ public class Rol {
 
     @ManyToOne
     @JoinColumn(name = "tipo_rol", referencedColumnName = "idTipoRol")
+    @JsonBackReference // Esto evita la serialización recursiva
     private TipoRol tipoRol;
 
     // Constructor vacío

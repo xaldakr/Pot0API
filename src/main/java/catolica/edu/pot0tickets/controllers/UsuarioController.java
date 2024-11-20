@@ -1,7 +1,9 @@
 package catolica.edu.pot0tickets.controllers;
 
+import catolica.edu.pot0tickets.models.Rol;
 import catolica.edu.pot0tickets.models.Usuario;
 import catolica.edu.pot0tickets.services.UsuarioService;
+import catolica.edu.pot0tickets.repositories.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +17,11 @@ import java.util.Map;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-
+    private final RolRepository rolRepository;
     @Autowired
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, RolRepository rolRepository) {
         this.usuarioService = usuarioService;
+        this.rolRepository=rolRepository;
     }
 
     @GetMapping("/ObtenerDash")
@@ -48,10 +51,38 @@ public class UsuarioController {
     }
 
     @PostMapping("/CrearUsuario")
-    public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody Usuario usuario) {
-        Usuario nuevoUsuario = usuarioService.createUsuario(usuario);
-        return ResponseEntity.ok(nuevoUsuario);
+    public ResponseEntity<Usuario> createUsuario(@RequestBody Map<String, Object> requestBody) {
+        // Obtener los datos del Map
+        String nombre = (String) requestBody.get("nombre");
+        String apellido = (String) requestBody.get("apellido");
+        String telefono = (String) requestBody.get("telefono");
+        String email = (String) requestBody.get("email");
+        String contrasena = (String) requestBody.get("contrasena");
+        String telContacto = (String) requestBody.get("telContacto");
+        Integer rolId = (Integer) requestBody.get("rolId");  // Usando 'rol' en vez de 'rolId'
+    
+        // Obtener el Rol desde el repositorio utilizando el rolId
+        Rol rol = rolRepository.findById(rolId)
+                               .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
+    
+        // Crear el nuevo Usuario utilizando los datos extraídos del Map
+        Usuario nuevoUsuario = new Usuario(
+            nombre,
+            apellido,
+            telefono,
+            email,
+            contrasena,
+            telContacto,
+            rol
+        );
+    
+        // Guardar el nuevo Usuario
+        Usuario usuarioGuardado = usuarioService.createUsuario(nuevoUsuario);
+        
+        return ResponseEntity.ok(usuarioGuardado);
     }
+    
+
 
     @PatchMapping("/EditarUsuario/{id_usuario}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable int id_usuario, @RequestBody Usuario updatedUsuario) {

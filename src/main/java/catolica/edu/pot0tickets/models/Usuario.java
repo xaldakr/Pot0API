@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
+import catolica.edu.pot0tickets.repositories.RolRepository;
+
 @Entity
 @Table(name = "Usuarios")
 public class Usuario {
@@ -66,6 +68,20 @@ public class Usuario {
         this.telContacto = telContacto;
         this.rol = rol;
     }
+
+      public Usuario(String nombre, String apellido, String telefono, String email, 
+                   String contrasena, String telContacto, Rol rol) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.email = email;
+        this.contrasena = contrasena;
+        this.telContacto = telContacto;
+        
+        // Obtener el Rol usando el repositorio y el ID proporcionado
+        this.rol = rol;
+    }
+
 
     // Getters y Setters
     public int getIdUsuario() {

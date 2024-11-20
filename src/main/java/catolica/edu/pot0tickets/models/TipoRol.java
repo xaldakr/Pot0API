@@ -1,5 +1,6 @@
 package catolica.edu.pot0tickets.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ public class TipoRol {
     private String nombre;
 
     @OneToMany(mappedBy = "tipoRol")
+    @JsonManagedReference // Esto permite serializar los roles sin problemas
     private List<Rol> roles;
 
     // Constructor vacío
