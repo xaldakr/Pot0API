@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/tickets")
+@RequestMapping("/api/tickets")
 public class TicketController {
 
     private final TicketService ticketService;
@@ -28,7 +28,7 @@ public class TicketController {
     public ResponseEntity<?> getDashboardTickets() {
         List<Map<String, Object>> tickets = ticketService.getDashboardTickets();
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -37,7 +37,7 @@ public class TicketController {
     public ResponseEntity<?> getAllTickets() {
         List<Map<String, Object>> tickets = ticketService.getAllTickets();
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -46,7 +46,7 @@ public class TicketController {
     public ResponseEntity<?> getUnassignedTickets() {
         List<Map<String, Object>> tickets = ticketService.getUnassignedTickets();
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -55,7 +55,7 @@ public class TicketController {
     public ResponseEntity<?> getTicketsByClient(@PathVariable int id) {
         List<Map<String, Object>> tickets = ticketService.getTicketsByClient(id);
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -64,7 +64,7 @@ public class TicketController {
     public ResponseEntity<?> getTicketsByFilter(@PathVariable int id) {
         List<Map<String, Object>> tickets = ticketService.getTicketsByFilter(id);
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -73,7 +73,7 @@ public class TicketController {
     public ResponseEntity<?> getTicketsByAssignee(@PathVariable int id, @PathVariable(required = false) Integer tipo) {
         List<Map<String, Object>> tickets = ticketService.getTicketsByAssignee(id, tipo);
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -86,7 +86,7 @@ public class TicketController {
 
         List<Map<String, Object>> tickets = ticketService.getTicketsByState(startDate, endDate, type);
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tickets);
         }
         return ResponseEntity.ok(tickets);
     }
@@ -94,7 +94,7 @@ public class TicketController {
     public ResponseEntity<Map<String, Object>> getTicketDetail(@PathVariable("id") int idTicket) {
         Map<String, Object> ticketDetail = ticketService.getTicketDetail(idTicket);
         if (ticketDetail == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(ticketDetail);
         }
         return ResponseEntity.ok(ticketDetail);
     }

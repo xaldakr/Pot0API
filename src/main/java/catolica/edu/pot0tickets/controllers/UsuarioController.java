@@ -24,19 +24,19 @@ public class UsuarioController {
     @GetMapping("/ObtenerDash")
     public ResponseEntity<List<Object>> getDashboardInfo() {
         List<Object> result = usuarioService.getDashboardInfo();
-        return result.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(result);
+        return result.isEmpty() ? ResponseEntity.ok(result) : ResponseEntity.ok(result);
     }
 
     @GetMapping("/ObtenerUsus/{tipo}")
     public ResponseEntity<List<Object>> getUsersByRole(@PathVariable int tipo, @RequestParam(defaultValue = "") String busqueda) {
         List<Object> usuarios = usuarioService.findUsersByRoleAndEmail(tipo, busqueda);
-        return usuarios.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(usuarios);
+        return usuarios.isEmpty() ? ResponseEntity.ok(usuarios) : ResponseEntity.ok(usuarios);
     }
 
     @GetMapping("/ObtenerTecnicos")
     public ResponseEntity<List<Object>> getTechnicians(@RequestParam(defaultValue = "") String busqueda) {
         List<Object> tecnicos = usuarioService.findTechnicians(busqueda);
-        return tecnicos.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(tecnicos);
+        return tecnicos.isEmpty() ? ResponseEntity.ok(tecnicos) : ResponseEntity.ok(tecnicos);
     }
 
     @PostMapping("/Login")

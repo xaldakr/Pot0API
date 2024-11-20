@@ -92,7 +92,7 @@ public class MiscController {
                                             .collect(Collectors.toList());
 
         if (tareas.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(tareas);
         }
         return ResponseEntity.ok(tareas);
     }
