@@ -235,7 +235,7 @@ public class CorreoService {
 
         enviar(destinatario, asunto, cuerpo);
     }
-    public void enviarBienvenida(Usuario usuario) {
+    public void enviarBienvenida(Usuario usuario, String contra) {
         String destinatario = usuario.getEmail();
         String asunto = "Bienvenido al servicio de Pot1 Tickets";
         String cuerpo = String.format(
@@ -260,13 +260,13 @@ public class CorreoService {
                 "<p>Si quiere hacer un cambio de datos más adelante, contacte a este correo por favor.</p>" +
                 "</div></body></html>",
                 usuario.getRol().getNombre(), usuario.getNombre(), usuario.getApellido(),
-                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), usuario.getContrasena()
+                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), contra
         );
 
         enviar(destinatario, asunto, cuerpo);
     }
 
-    public void enviarCambioDatos(Usuario usuario) {
+    public void enviarCambioDatos(Usuario usuario, String contra) {
         String destinatario = usuario.getEmail();
         String asunto = "Cambio de datos al ingreso de Pot1 Tickets";
         String cuerpo = String.format(
@@ -292,7 +292,7 @@ public class CorreoService {
                 "<p>Si quiere hacer un cambio de datos más adelante, contacte a este correo por favor.</p>" +
                 "</div></body></html>",
                 usuario.getRol().getNombre(), usuario.getNombre(), usuario.getApellido(),
-                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), usuario.getContrasena()
+                usuario.getTelefono(), usuario.getTelContacto(), usuario.getEmail(), contra
         );
 
         enviar(destinatario, asunto, cuerpo);

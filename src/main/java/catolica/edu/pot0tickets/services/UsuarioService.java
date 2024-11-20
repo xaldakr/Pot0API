@@ -1,5 +1,6 @@
 package catolica.edu.pot0tickets.services;
 
+import catolica.edu.pot0tickets.models.Rol;
 import catolica.edu.pot0tickets.models.Usuario;
 import catolica.edu.pot0tickets.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,24 +44,56 @@ public class UsuarioService {
     }
 
     public Usuario createUsuario(Usuario usuario) {
+        String contra = usuario.getContrasena();
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena())); // Encriptar la contraseña
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
-        correoService.enviarBienvenida(nuevoUsuario);
+        correoService.enviarBienvenida(nuevoUsuario, contra);
         return nuevoUsuario;
     }
 
-    public Usuario updateUsuario(int id, Usuario updatedUsuario) {
-        return usuarioRepository.findById(id).map(usuario -> {
-            usuario.setNombre(updatedUsuario.getNombre());
-            usuario.setApellido(updatedUsuario.getApellido());
-            usuario.setTelefono(updatedUsuario.getTelefono());
-            usuario.setEmail(updatedUsuario.getEmail());
-            usuario.setContrasena(passwordEncoder.encode(updatedUsuario.getContrasena()));
-            usuario.setTelContacto(updatedUsuario.getTelContacto());
-            usuario.setRol(updatedUsuario.getRol());
-            Usuario usuarioActualizado = usuarioRepository.save(usuario);
-            correoService.enviarCambioDatos(usuarioActualizado);
+    public Usuario updateUsuario(
+        int id,
+        String nombre,
+        String apellido,
+        String telefono,
+        String email,
+        String contrasena,
+        String telContacto,
+        Rol rol) {
+    return usuarioRepository.findById(id).map(usuario -> {
+        if (nombre != null) {
+            usuario.setNombre(nombre);
+        }
+        if (apellido != null) {
+            usuario.setApellido(apellido);
+        }
+        if (telefono != null) {
+            usuario.setTelefono(telefono);
+        }
+        if (email != null) {
+            usuario.setEmail(email);
+        }
+        if (contrasena != null) {
+            usuario.setContrasena(passwordEncoder.encode(contrasena));
+        }
+        if (telContacto != null) {
+            usuario.setTelContacto(telContacto);
+        }
+        if (rol != null) {
+            usuario.setRol(rol);
+        }
+
+        Usuario usuarioActualizado = usuarioRepository.save(usuario);
+
+            // Enviar correo si la contraseña fue actualizada
+            if (contrasena != null) {
+                correoService.enviarCambioDatos(usuarioActualizado, contrasena);
+            } else {
+                correoService.enviarCambioDatos(usuarioActualizado, " la misma que la vez anterior, revise el correo anterior de creación o cambio de credenciales");
+            }
+    
             return usuarioActualizado;
         }).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
+    
 }

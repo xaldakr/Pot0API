@@ -42,7 +42,7 @@ public class Usuario {
 
     // Relación ManyToOne con Rol
     @ManyToOne
-    @JoinColumn(name = "id_rol", referencedColumnName = "idRol", insertable = false, updatable = false)
+    @JoinColumn(name = "id_rol", referencedColumnName = "idRol")
     private Rol rol;
 
     @OneToMany(mappedBy = "cliente")
@@ -77,8 +77,6 @@ public class Usuario {
         this.email = email;
         this.contrasena = contrasena;
         this.telContacto = telContacto;
-        
-        // Obtener el Rol usando el repositorio y el ID proporcionado
         this.rol = rol;
     }
 

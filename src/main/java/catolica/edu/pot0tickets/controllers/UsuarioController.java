@@ -85,8 +85,27 @@ public class UsuarioController {
 
 
     @PatchMapping("/EditarUsuario/{id_usuario}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable int id_usuario, @RequestBody Usuario updatedUsuario) {
-        Usuario usuario = usuarioService.updateUsuario(id_usuario, updatedUsuario);
-        return ResponseEntity.ok(usuario);
+public ResponseEntity<Usuario> updateUsuario(@PathVariable int id_usuario, @RequestBody Map<String, Object> requestBody) {
+    // Extraer datos opcionales del Map
+    String nombre = (String) requestBody.get("nombre");
+    String apellido = (String) requestBody.get("apellido");
+    String telefono = (String) requestBody.get("telefono");
+    String email = (String) requestBody.get("email");
+    String contrasena = (String) requestBody.get("contrasena");
+    String telContacto = (String) requestBody.get("telContacto");
+    Integer rolId = (Integer) requestBody.get("rolId");
+
+    // Buscar el Rol si está presente en el cuerpo
+    Rol rol = null;
+    if (rolId != null) {
+        rol = rolRepository.findById(rolId)
+                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
     }
+
+    // Llamar al servicio para realizar la actualización
+    Usuario usuarioActualizado = usuarioService.updateUsuario(id_usuario, nombre, apellido, telefono, email, contrasena, telContacto, rol);
+
+    return ResponseEntity.ok(usuarioActualizado);
+}
+
 }
