@@ -24,7 +24,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u FROM Usuario u  WHERE u.idUsuario = :id AND u.rol.idRol != :role")
     Optional<Usuario> findByIdAndNoRole(@Param("id") int id, @Param("role") int role);
 
-    @Query("SELECT new map(u.idUsuario AS id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, u.email AS email, u.telefono AS telefono, COUNT(u.ticketsEncargado) AS no_tickets) FROM Usuario u JOIN u.rol r JOIN r.tipoRol tr LEFT JOIN u.ticketsCliente t WHERE tr.idTipoRol != 1 GROUP BY u.idUsuario ORDER BY no_tickets DESC")
+    @Query("SELECT new map(u.idUsuario AS id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, u.email AS email, u.telefono AS telefono, COUNT(t) AS no_tickets) FROM Usuario u JOIN u.rol r JOIN r.tipoRol tr LEFT JOIN u.ticketsEncargado t  WHERE tr.idTipoRol != 1 GROUP BY u.idUsuario ORDER BY no_tickets DESC")
     List<Object> getDashboardInfo();
 
     @Query("SELECT new map(u.idUsuario AS id_usuario, CONCAT(u.nombre, ' ', u.apellido) AS nombre, u.nombre AS nom, u.apellido AS ape, u.telContacto AS contacto, u.email AS email, u.telefono AS telefono, u.rol.idRol AS id_rol) FROM Usuario u WHERE u.rol.idRol = :tipo AND u.email LIKE %:busqueda% ORDER BY u.nombre DESC")
