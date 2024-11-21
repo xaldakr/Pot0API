@@ -73,7 +73,7 @@ public class TicketService {
     }
 
     public Map<String, Object> getTicketDetail(int idTicket) {
-        return ticketRepository.findTicketDetailById(idTicket);
+        return ticketRepository.findTicketDetail(idTicket);
     }
 
     public Ticket createTicket(String descripcion, String servicio, String prioridad, int idCliente, MultipartFile file) throws IOException {

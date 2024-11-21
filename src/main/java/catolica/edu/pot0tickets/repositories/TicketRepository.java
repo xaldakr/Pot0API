@@ -66,41 +66,119 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
     @Query("SELECT new map(t.idTicket as idTicket, t.estado as estado, t.descripcion as descripcion, t.prioridad as prioridad, t.servicio as servicio, t.fecha as fecha, CONCAT(c.nombre, ' ', c.apellido) as Cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as encargado) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario WHERE t.idTicket = :idTicket")
     Map<String, Object> findTicketDetailById(int idTicket);
 
-    @Query("""
-        SELECT t.estado AS estado, 
-            t.descripcion AS descripcion, 
-            t.prioridad AS prioridad, 
-            t.servicio AS servicio, 
-            t.fecha AS fecha, 
-            CONCAT(c.nombre, ' ', c.apellido) AS cliente, 
-            CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END AS encargado,
-            (SELECT STRING_AGG(a.url, ', ') FROM Archivo a WHERE a.ticket.idTicket = t.idTicket) AS archivos,
-            (SELECT STRING_AGG(CONCAT(tr.nombre, ' - ', tr.prioridad), ', ') FROM Tarea tr WHERE tr.ticket.idTicket = t.idTicket) AS tareas,
-            (SELECT STRING_AGG(CONCAT(n.dato, ' - ', n.urlArchivo), ', ') 
-                FROM Notificacion n 
-                WHERE n.ticket.idTicket = t.idTicket AND n.notificarCliente = true) AS notificaciones
-        FROM Ticket t
-        JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario
-        LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario
-        WHERE t.idTicket = :idTicket
-    """)
+    // Obtener detalle completo del ticket
+    @Query(value = """
+        SELECT 
+            t.id_ticket AS idTicket,
+            c.nombre AS clienteNombre,
+            c.apellido AS clienteApellido,
+            c.telefono AS clienteTelefono,
+            t.servicio AS servicio,
+            t.estado AS estado,
+            t.prioridad AS prioridad,
+            t.descripcion AS descripcion,
+            TO_CHAR(t.fecha, 'DD/MMMM/YYYY') AS fecha,
+            CASE 
+                WHEN e.id_usuario IS NULL THEN NULL 
+                ELSE CONCAT(e.nombre, ' ', e.apellido) 
+            END AS encargado,
+            (SELECT json_agg(a.url) 
+             FROM archivos a 
+             WHERE a.id_ticket = t.id_ticket) AS archivos,
+            (SELECT json_agg(json_build_object(
+                'idTarea', tr.id_tarea,
+                'nombre', tr.nombre,
+                'prioridad', tr.prioridad,
+                'info', tr.info,
+                'estado', tr.estado,
+                'encargado', CASE 
+                    WHEN tr.id_encargado IS NULL THEN NULL
+                    ELSE CONCAT(u.nombre, ' ', u.apellido)
+                END)) 
+             FROM tareas tr
+             LEFT JOIN usuarios u ON u.id_usuario = tr.id_encargado
+             WHERE tr.id_ticket = t.id_ticket) AS tareas,
+            (SELECT json_agg(json_build_object(
+                'remitente', 
+                CASE 
+                    WHEN n.remitente IS NULL 
+                        THEN (CASE WHEN n.autogenerada THEN 'Autogenerada' ELSE 'Anonimo' END) 
+                        ELSE CONCAT(usr.nombre, ' ', usr.apellido) 
+                END,
+                'dato', n.dato,
+                'urlArchivo', CASE 
+                    WHEN n.url_archivo = 'No existente' THEN NULL 
+                    ELSE n.url_archivo 
+                END,
+                'fecha', TO_CHAR(n.fecha, 'DD/MMMM/YYYY')
+            )) 
+            FROM notificaciones n
+            LEFT JOIN usuarios usr ON usr.id_usuario = n.remitente
+            WHERE n.id_ticket = t.id_ticket
+            ) AS notificaciones
+        FROM tickets t
+        JOIN usuarios c ON c.id_usuario = t.id_cliente
+        LEFT JOIN usuarios e ON e.id_usuario = t.id_encargado
+        WHERE t.id_ticket = :idTicket
+    """, nativeQuery = true)
     Map<String, Object> findTicketDetail(@Param("idTicket") int idTicket);
 
-    @Query("""
-        SELECT new map(t.estado as estado, t.descripcion as descripcion, 
-        t.prioridad as prioridad, t.servicio as servicio, t.fecha as fecha, 
-        CONCAT(c.nombre, ' ', c.apellido) as cliente, 
-        CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as encargado, 
-        a.url as archivos, tr.nombre as tareas, n.dato as notificaciones) 
-        FROM Ticket t 
-        JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario 
-        LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario 
-        LEFT JOIN Archivo a ON a.ticket.idTicket = t.idTicket 
-        LEFT JOIN Tarea tr ON tr.ticket.idTicket = t.idTicket 
-        LEFT JOIN Notificacion n ON n.ticket.idTicket = t.idTicket 
-        WHERE t.idTicket = :idTicket
-        """)
-    Map<String, Object> findTicketDetailForClient(int idTicket);
+    // Obtener detalle del ticket visible para clientes (filtrando notificaciones)
+    @Query(value = """
+        SELECT 
+            t.id_ticket AS idTicket,
+            c.nombre AS clienteNombre,
+            c.apellido AS clienteApellido,
+            c.telefono AS clienteTelefono,
+            t.servicio AS servicio,
+            t.estado AS estado,
+            t.prioridad AS prioridad,
+            t.descripcion AS descripcion,
+            TO_CHAR(t.fecha, 'DD/MMMM/YYYY') AS fecha,
+            CASE 
+                WHEN e.id_usuario IS NULL THEN NULL 
+                ELSE CONCAT(e.nombre, ' ', e.apellido) 
+            END AS encargado,
+            (SELECT json_agg(a.url) 
+             FROM archivos a 
+             WHERE a.id_ticket = t.id_ticket) AS archivos,
+            (SELECT json_agg(json_build_object(
+                'idTarea', tr.id_tarea,
+                'nombre', tr.nombre,
+                'prioridad', tr.prioridad,
+                'info', tr.info,
+                'estado', tr.estado,
+                'encargado', CASE 
+                    WHEN tr.id_encargado IS NULL THEN NULL
+                    ELSE CONCAT(u.nombre, ' ', u.apellido)
+                END)) 
+             FROM tareas tr
+             LEFT JOIN usuarios u ON u.id_usuario = tr.id_encargado
+             WHERE tr.id_ticket = t.id_ticket) AS tareas,
+            (SELECT json_agg(json_build_object(
+                'remitente', 
+                CASE 
+                    WHEN n.remitente IS NULL 
+                        THEN (CASE WHEN n.autogenerada THEN 'Autogenerada' ELSE 'Anonimo' END) 
+                        ELSE CONCAT(usr.nombre, ' ', usr.apellido) 
+                END,
+                'dato', n.dato,
+                'urlArchivo', CASE 
+                    WHEN n.url_archivo = 'No existente' THEN NULL 
+                    ELSE n.url_archivo 
+                END,
+                'fecha', TO_CHAR(n.fecha, 'DD/MMMM/YYYY')
+            )) 
+            FROM notificaciones n
+            LEFT JOIN usuarios usr ON usr.id_usuario = n.remitente
+            WHERE n.id_ticket = t.id_ticket AND n.notificar_cliente = true
+            ) AS notificaciones
+        FROM tickets t
+        JOIN usuarios c ON c.id_usuario = t.id_cliente
+        LEFT JOIN usuarios e ON e.id_usuario = t.id_encargado
+        WHERE t.id_ticket = :idTicket
+    """, nativeQuery = true)
+    Map<String, Object> findTicketDetailForClient(@Param("idTicket") int idTicket);
 
 
                                                  
