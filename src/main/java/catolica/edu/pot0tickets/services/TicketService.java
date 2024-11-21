@@ -158,7 +158,7 @@ public class TicketService {
     @Transactional
     public Ticket assignSupport(int ticketId, int idSoporte) {
         // Verificar que el usuario sea soporte
-        Usuario soporte = usuarioRepository.findByIdAndRole(idSoporte, 2)
+        Usuario soporte = usuarioRepository.findByIdAndNoRole(idSoporte, 1)
                 .orElseThrow(() -> new RuntimeException("Usuario de soporte no encontrado."));
 
         // Obtener el ticket

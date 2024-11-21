@@ -156,8 +156,10 @@ public class TicketController {
     @PatchMapping("/AsignarSoporte/{id}")
     public ResponseEntity<Ticket> assignSupport(
             @PathVariable("id") int ticketId,
-            @RequestParam("idSoporte") int idSoporte) {
+            @RequestBody Map<String, Object> requestBody) {
         try {
+            // Extraer el idSoporte del Map
+            int idSoporte = (int) requestBody.get("idSoporte");
             Ticket updatedTicket = ticketService.assignSupport(ticketId, idSoporte);
             return ResponseEntity.ok(updatedTicket);
         } catch (Exception e) {

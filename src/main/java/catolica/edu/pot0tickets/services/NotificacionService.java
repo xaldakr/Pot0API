@@ -30,6 +30,7 @@ public class NotificacionService {
         notificacion.setNotificarCliente(true);
         notificacion.setAutogenerada(remitente == null);
         notificacion.setFecha(new Date());
+        notificacion.setUrlArchivo("No existente");
 
         notificacionRepository.save(notificacion);
     }

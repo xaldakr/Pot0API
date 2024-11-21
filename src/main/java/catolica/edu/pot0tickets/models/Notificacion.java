@@ -62,13 +62,14 @@ public class Notificacion {
     }
 
     // Constructor sin id ni archivo
-    public Notificacion( String dato,  boolean notificarCliente, boolean autogenerada, Usuario remitente, Ticket ticket) {
+    public Notificacion( String dato, boolean notificarCliente, boolean autogenerada, Usuario remitente, Ticket ticket) {
         this.dato = dato;
         this.notificarCliente = notificarCliente;
         this.fecha = new Date();
         this.autogenerada = autogenerada;
         this.remitente = remitente;
         this.ticket = ticket;
+        this.urlArchivo = "No existente";
     }
 
     // Constructor automático
@@ -79,6 +80,7 @@ public class Notificacion {
         this.autogenerada = true;
         this.remitente = remitente;
         this.ticket = ticket;
+        this.urlArchivo = "No existente";
     }
 
     // Getters y Setters
