@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ public class TicketService {
 
     @Autowired
     private final TicketRepository ticketRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     private CorreoService correoService;
@@ -40,8 +44,9 @@ public class TicketService {
     private ArchivoService archivoService;
 
     @Autowired
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, ObjectMapper objectMapper) {
         this.ticketRepository = ticketRepository;
+        this.objectMapper = objectMapper;
     }
 
     public List<Map<String, Object>> getDashboardTickets() {
@@ -73,7 +78,14 @@ public class TicketService {
     }
 
     public Map<String, Object> getTicketDetail(int idTicket) {
-        return ticketRepository.findTicketDetail(idTicket);
+        Map<String, Object> ticketDetail = ticketRepository.findTicketDetail(idTicket);
+
+        // Crear una copia mutable del mapa
+        Map<String, Object> mutableDetail = new HashMap<>(ticketDetail);
+
+        deserializeJsonFields(mutableDetail, "notificaciones", "tareas", "archivos");
+
+        return mutableDetail;
     }
 
     public Ticket createTicket(String descripcion, String servicio, String prioridad, int idCliente, MultipartFile file) throws IOException {
@@ -104,7 +116,14 @@ public class TicketService {
         return savedTicket;
     }
     public Map<String, Object> getTicketDetailForClient(int idTicket) {
-        return ticketRepository.findTicketDetailForClient(idTicket);
+        Map<String, Object> ticketDetail = ticketRepository.findTicketDetailForClient(idTicket);
+
+        // Crear una copia mutable del mapa
+        Map<String, Object> mutableDetail = new HashMap<>(ticketDetail);
+
+        deserializeJsonFields(mutableDetail, "notificaciones", "tareas", "archivos");
+
+        return mutableDetail;
     }
 
     @Transactional
@@ -184,5 +203,21 @@ public class TicketService {
                 soporte.getEmail(), ticket.getIdTicket(), ticket.getServicio(), ticket.getPrioridad());
 
         return ticket;
+    }
+
+    private void deserializeJsonFields(Map<String, Object> ticketDetail, String... fields) {
+        for (String field : fields) {
+            if (ticketDetail.get(field) != null) {
+                try {
+                    List<Map<String, Object>> parsedField = objectMapper.readValue(
+                        ticketDetail.get(field).toString(), List.class
+                    );
+                    ticketDetail.put(field, parsedField);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ticketDetail.put(field, null); // Si ocurre un error, establece el campo como null
+                }
+            }
+        }
     }
 }

@@ -84,7 +84,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
             END AS encargado,
             (SELECT json_agg(a.url) 
              FROM archivos a 
-             WHERE a.id_ticket = t.id_ticket) AS archivos,
+             WHERE a.id_ticket = t.id_ticket)::json AS archivos,
             (SELECT json_agg(json_build_object(
                 'idTarea', tr.id_tarea,
                 'nombre', tr.nombre,
@@ -97,7 +97,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
                 END)) 
              FROM tareas tr
              LEFT JOIN usuarios u ON u.id_usuario = tr.id_encargado
-             WHERE tr.id_ticket = t.id_ticket) AS tareas,
+             WHERE tr.id_ticket = t.id_ticket)::json AS tareas,
             (SELECT json_agg(json_build_object(
                 'remitente', 
                 CASE 
@@ -115,7 +115,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
             FROM notificaciones n
             LEFT JOIN usuarios usr ON usr.id_usuario = n.remitente
             WHERE n.id_ticket = t.id_ticket
-            ) AS notificaciones
+            )::json AS notificaciones
         FROM tickets t
         JOIN usuarios c ON c.id_usuario = t.id_cliente
         LEFT JOIN usuarios e ON e.id_usuario = t.id_encargado
@@ -141,7 +141,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
             END AS encargado,
             (SELECT json_agg(a.url) 
              FROM archivos a 
-             WHERE a.id_ticket = t.id_ticket) AS archivos,
+             WHERE a.id_ticket = t.id_ticket)::json AS archivos,
             (SELECT json_agg(json_build_object(
                 'idTarea', tr.id_tarea,
                 'nombre', tr.nombre,
@@ -154,7 +154,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
                 END)) 
              FROM tareas tr
              LEFT JOIN usuarios u ON u.id_usuario = tr.id_encargado
-             WHERE tr.id_ticket = t.id_ticket) AS tareas,
+             WHERE tr.id_ticket = t.id_ticket)::json AS tareas,
             (SELECT json_agg(json_build_object(
                 'remitente', 
                 CASE 
@@ -172,7 +172,7 @@ List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime s
             FROM notificaciones n
             LEFT JOIN usuarios usr ON usr.id_usuario = n.remitente
             WHERE n.id_ticket = t.id_ticket AND n.notificar_cliente = true
-            ) AS notificaciones
+            )::json AS notificaciones
         FROM tickets t
         JOIN usuarios c ON c.id_usuario = t.id_cliente
         LEFT JOIN usuarios e ON e.id_usuario = t.id_encargado

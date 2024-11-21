@@ -105,11 +105,8 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
     @GetMapping("/ObtenerDetalle/{id}")
-    public ResponseEntity<Map<String, Object>> getTicketDetail(@PathVariable("id") int idTicket) {
+    public ResponseEntity<?> getTicketDetail(@PathVariable("id") int idTicket) {
         Map<String, Object> ticketDetail = ticketService.getTicketDetail(idTicket);
-        if (ticketDetail == null) {
-            return ResponseEntity.ok(ticketDetail);
-        }
         return ResponseEntity.ok(ticketDetail);
     }
 
@@ -132,11 +129,8 @@ public class TicketController {
     }
 
     @GetMapping("/ObtenerDetalleCliente/{id}")
-    public ResponseEntity<Map<String, Object>> getTicketDetailForClient(@PathVariable("id") int idTicket) {
+    public ResponseEntity<?> getTicketDetailForClient(@PathVariable("id") int idTicket) {
         Map<String, Object> ticketDetail = ticketService.getTicketDetailForClient(idTicket);
-        if (ticketDetail == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(ticketDetail);
     }
 
