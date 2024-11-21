@@ -137,13 +137,24 @@ public class TicketController {
     @PatchMapping("/EditarTicket/{id}")
     public ResponseEntity<Ticket> updateTicketState(
             @PathVariable("id") int ticketId,
-            @RequestParam("estado") String nuevoEstado,
-            @RequestParam("idEjecutor") int idEjecutor) {
+            @RequestBody Map<String, Object> requestBody) {
         try {
+            // Obtener valores del mapa del cuerpo de la solicitud
+            String nuevoEstado = (String) requestBody.get("estado");
+            Integer idEjecutor = (Integer) requestBody.get("idEjecutor");
+
+            // Validar los valores
+            if (nuevoEstado == null || idEjecutor == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            // Actualizar el ticket
             Ticket updatedTicket = ticketService.updateTicketState(ticketId, nuevoEstado, idEjecutor);
             return ResponseEntity.ok(updatedTicket);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body(null);
+            
         }
     }
 
