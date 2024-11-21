@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import catolica.edu.pot0tickets.models.Usuario;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -43,10 +44,21 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT new map(t.idTicket as Id, t.servicio as Servicio, t.fecha as FechaDate, t.estado as Estado, CONCAT(c.nombre, ' ', c.apellido) as Cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as Empleado, c.email as Correo) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario WHERE t.encargado.idUsuario = :assigneeId AND (:type IS NULL OR (:type = 1 AND NOT t.estado = 'RESUELTO') OR (:type = 2 AND t.estado = 'RESUELTO')) ORDER BY t.fecha DESC")
     List<Map<String, Object>> findTicketsByAssignee(@Param("assigneeId") int assigneeId, @Param("type") Integer type);
 
-    @Query("SELECT new map(t.idTicket as Id, t.servicio as Servicio, t.fecha as FechaDate, t.estado as Estado, CONCAT(c.nombre, ' ', c.apellido) as Cliente, CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as Empleado, c.email as Correo) FROM Ticket t JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario WHERE t.fecha >= :startDate AND t.fecha <= :endDate AND (:type = 1 AND t.estado = 'RESUELTO' OR :type = 2 AND NOT t.estado IN ('RESUELTO', 'CREADO') OR :type = 3 AND t.estado = 'CREADO') ORDER BY t.fecha DESC")
-    List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDate startDate, 
-    @Param("endDate") LocalDate endDate, 
-    @Param("type") int type);
+    @Query("SELECT new map(t.idTicket as Id, t.servicio as Servicio, t.fecha as FechaDate, t.estado as Estado, " +
+       "CONCAT(c.nombre, ' ', c.apellido) as Cliente, " +
+       "CASE WHEN e IS NULL THEN NULL ELSE CONCAT(e.nombre, ' ', e.apellido) END as Empleado, " +
+       "c.email as Correo) " +
+       "FROM Ticket t " +
+       "JOIN Usuario c ON t.cliente.idUsuario = c.idUsuario " +
+       "LEFT JOIN Usuario e ON t.encargado.idUsuario = e.idUsuario " +
+       "WHERE t.fecha >= :startDate AND t.fecha <= :endDate AND " +
+       "(:type = 1 AND t.estado = 'RESUELTO' OR " +
+       ":type = 2 AND NOT t.estado IN ('RESUELTO', 'CREADO') OR " +
+       ":type = 3 AND t.estado = 'CREADO') " +
+       "ORDER BY t.fecha DESC")
+List<Map<String, Object>> findTicketsByState(@Param("startDate") LocalDateTime startDate, 
+                                             @Param("endDate") LocalDateTime endDate, 
+                                             @Param("type") int type);
 
     @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.archivos a LEFT JOIN FETCH t.tareas ta WHERE t.idTicket = :ticketId")
     Ticket findByIdWithDetails(@Param("ticketId") int ticketId);

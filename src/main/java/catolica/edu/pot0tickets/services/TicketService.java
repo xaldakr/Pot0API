@@ -68,7 +68,7 @@ public class TicketService {
         return ticketRepository.findTicketsByAssignee(assigneeId, type);
     }
 
-    public List<Map<String, Object>> getTicketsByState(LocalDate startDate, LocalDate endDate, int type) {
+    public List<Map<String, Object>> getTicketsByState(LocalDateTime startDate, LocalDateTime endDate, int type) {
         return ticketRepository.findTicketsByState(startDate, endDate, type);
     }
 

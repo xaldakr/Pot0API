@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -80,14 +82,26 @@ public class TicketController {
 
     @PostMapping("/ObtenerPorEstado")
     public ResponseEntity<?> getTicketsByState(@RequestBody Map<String, Object> data) {
-        LocalDate startDate = LocalDate.parse(data.get("inicio").toString());
-        LocalDate endDate = LocalDate.parse(data.get("fin").toString());
+        // Parsear o establecer valores predeterminados para las fechas
+        OffsetDateTime startDateTime = data.containsKey("inicio")
+                ? OffsetDateTime.parse(data.get("inicio").toString())
+                : OffsetDateTime.now().minusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        OffsetDateTime endDateTime = data.containsKey("fin")
+                ? OffsetDateTime.parse(data.get("fin").toString())
+                : OffsetDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+
+        // Convertir las fechas a LocalDate para pasarlas al servicio
+        LocalDateTime startDate = startDateTime.toLocalDateTime();
+        LocalDateTime endDate = endDateTime.toLocalDateTime();
+
+        // Parsear el tipo desde el mapa de datos
         int type = Integer.parseInt(data.get("tipo").toString());
 
+        // Llamar al servicio
         List<Map<String, Object>> tickets = ticketService.getTicketsByState(startDate, endDate, type);
-        if (tickets.isEmpty()) {
-            return ResponseEntity.ok(tickets);
-        }
+
+        // Responder al cliente
         return ResponseEntity.ok(tickets);
     }
     @GetMapping("/ObtenerDetalle/{id}")

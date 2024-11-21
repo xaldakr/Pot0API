@@ -94,7 +94,6 @@ public ResponseEntity<Usuario> updateUsuario(@PathVariable int id_usuario, @Requ
     String contrasena = (String) requestBody.get("contrasena");
     String telContacto = (String) requestBody.get("telContacto");
     Integer rolId = (Integer) requestBody.get("rolId");
-
     // Buscar el Rol si está presente en el cuerpo
     Rol rol = null;
     if (rolId != null) {

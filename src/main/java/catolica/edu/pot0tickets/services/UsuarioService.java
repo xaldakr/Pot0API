@@ -73,7 +73,7 @@ public class UsuarioService {
         if (email != null) {
             usuario.setEmail(email);
         }
-        if (contrasena != null) {
+        if (contrasena != null  && !contrasena.isBlank()) {
             usuario.setContrasena(passwordEncoder.encode(contrasena));
         }
         if (telContacto != null) {
@@ -86,7 +86,7 @@ public class UsuarioService {
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
 
             // Enviar correo si la contraseña fue actualizada
-            if (contrasena != null) {
+            if (contrasena != null && !contrasena.isBlank()) {
                 correoService.enviarCambioDatos(usuarioActualizado, contrasena);
             } else {
                 correoService.enviarCambioDatos(usuarioActualizado, " la misma que la vez anterior, revise el correo anterior de creación o cambio de credenciales");
